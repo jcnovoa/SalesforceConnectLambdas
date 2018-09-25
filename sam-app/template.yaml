@@ -1,0 +1,103 @@
+# You must have an AWS account to use the Amazon Connect CTI Adapter.
+# Downloading and/or using the Amazon Connect CTI Adapter is subject to the terms of the AWS Customer Agreement,
+# AWS Service Terms, and AWS Privacy Notice.
+
+# © 2017, Amazon Web Services, Inc. or its affiliates. All rights reserved.
+
+# NOTE:  Other license terms may apply to certain, identified software components
+# contained within or distributed with the Amazon Connect CTI Adapter if such terms are
+# included in the LibPhoneNumber-js and Salesforce Open CTI. For such identified components,
+# such other license terms will then apply in lieu of the terms above.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Amazon Connect SalesForce Lambda integration'
+
+Parameters:
+  SalesforceProduction:
+    Default: true
+    Description: True for Production Environment, False for Sandbox
+    Type: String
+    AllowedPattern: ^([Tt]rue|[Ff]alse)$
+    AllowedValues:
+    - true
+    - true
+    - false
+    - false
+    ConstraintDescription: True or False
+  SalesforceHost:
+    Default: ''
+    Description: Your Salesforce Host
+    Type: String
+  SalesforceConsumerKey:
+    Default: ''
+    Description: Your Salesforce consumer key
+    Type: String
+  SalesforceConsumerSecret:
+    Default: ''
+    Description: Your Salesforce consumer secret is available in Salesforce immediately
+      to the right of your Salesforce Consumer Key
+    Type: String
+  SalesforceUsername:
+    Default: Salesforce API Username
+    Description: The username of a valid Salesforce API account for your environment.
+      For example, user@domain.com
+    Type: String
+  SalesforcePassword:
+    Default: ''
+    Description: The password of a valid Salesforce API account for your environment.
+      This account must be the same one as entered in the “Salesforce API Configuration
+      Username” parameter above.
+    Type: String
+    NoEcho: true
+  SalesforceAccessToken:
+    Default: ''
+    Description: The security token of the Salesforce API user account used above.
+    Type: String
+  SalesforceVersion:
+    Default: v42.0
+    Description: To find the Salesforce Edition and API Version please visit https://help.salesforce.com/articleView?id=000199268&type=1
+    Type: String
+
+Globals:
+    Function:
+        Timeout: 6
+        Runtime: python3.6
+        CodeUri: .
+        Environment:
+            Variables:
+                SF_HOST:
+                    Ref: SalesforceHost
+                SF_PRODUCTION:
+                    Ref: SalesforceProduction
+                SF_CONSUMER_KEY:
+                    Ref: SalesforceConsumerKey
+                SF_CONSUMER_SECRET:
+                    Ref: SalesforceConsumerSecret
+                SF_USERNAME:
+                    Ref: SalesforceUsername
+                SF_PASSWORD:
+                    Ref: SalesforcePassword
+                SF_ACCESS_TOKEN:
+                    Ref: SalesforceAccessToken
+                SF_VERSION:
+                    Ref: SalesforceVersion
+Resources:
+    sfInvokeAPI:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: sfInvokeAPI.lambda_handler
+    
